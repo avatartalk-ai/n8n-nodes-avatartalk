@@ -1,19 +1,25 @@
 {
-	"name": "n8n-nodes-<...>",
+	"name": "n8n-nodes-avatartalk",
 	"version": "0.1.0",
-	"description": "",
+	"description": "n8n community node for AvatarTalk AI - Generate AI avatar videos with text-to-speech",
 	"license": "MIT",
-	"homepage": "",
+	"homepage": "https://github.com/avatartalk-ai/avatartalk-examples",
 	"keywords": [
-		"n8n-community-node-package"
+		"n8n-community-node-package",
+		"n8n",
+		"avatartalk",
+		"ai",
+		"avatar",
+		"video",
+		"text-to-speech"
 	],
 	"author": {
-		"name": "",
-		"email": ""
+		"name": "AvatarTalk.ai",
+		"email": "admin@avatartalk.ai"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/<...>/n8n-nodes-<...>.git"
+		"url": "https://github.com/avatartalk-ai/n8n-nodes-avatartalk.git"
 	},
 	"scripts": {
 		"build": "n8n-node build",
@@ -31,12 +37,10 @@
 		"n8nNodesApiVersion": 1,
 		"strict": true,
 		"credentials": [
-			"dist/credentials/GithubIssuesApi.credentials.js",
-			"dist/credentials/GithubIssuesOAuth2Api.credentials.js"
+			"dist/credentials/AvatarTalkApi.credentials.js"
 		],
 		"nodes": [
-			"dist/nodes/GithubIssues/GithubIssues.node.js",
-			"dist/nodes/Example/Example.node.js"
+			"dist/nodes/AvatarTalk/AvatarTalk.node.js"
 		]
 	},
 	"devDependencies": {

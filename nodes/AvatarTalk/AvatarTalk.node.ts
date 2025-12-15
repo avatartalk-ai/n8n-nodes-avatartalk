@@ -4,8 +4,9 @@ import type {
 	INodeType,
 	INodeTypeDescription,
 	IHttpRequestOptions,
+	Icon,
 } from 'n8n-workflow';
-import { NodeOperationError } from 'n8n-workflow';
+import { NodeOperationError, NodeConnectionTypes } from 'n8n-workflow';
 
 interface AvatarRequest {
 	text: string,
@@ -18,7 +19,7 @@ export class AvatarTalk implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'AvatarTalk',
 		name: 'avatarTalk',
-		icon: 'file:avatartalk.svg',
+		icon: { light: 'file:../../icons/avatartalk.svg', dark: 'file:../../icons/avatartalk.dark.svg' } as Icon,
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"]}}',
@@ -26,8 +27,8 @@ export class AvatarTalk implements INodeType {
 		defaults: {
 			name: 'AvatarTalk',
 		},
-		inputs: ['main'],
-		outputs: ['main'],
+		inputs: [NodeConnectionTypes.Main],
+		outputs: [NodeConnectionTypes.Main],
 		credentials: [
 			{
 				name: 'avatarTalkApi',
@@ -35,6 +36,19 @@ export class AvatarTalk implements INodeType {
 			},
 		],
 		properties: [
+			{
+				displayName: 'Resource',
+				name: 'resource',
+				type: 'hidden',
+				noDataExpression: true,
+				options: [
+					{
+						name: 'Video',
+						value: 'video',
+					},
+				],
+				default: 'video',
+			},
 			{
 				displayName: 'Operation',
 				name: 'operation',
@@ -194,22 +208,23 @@ export class AvatarTalk implements INodeType {
 					body.language = language;
 				}
 
-				const credentials = await this.getCredentials('avatarTalkApi');
-
 				if (operation === 'standard') {
 					// Standard inference - immediate processing
 					const options: IHttpRequestOptions = {
 						method: 'POST',
 						url: 'https://api.avatartalk.ai/inference',
 						headers: {
-							'Authorization': `Bearer ${credentials.apiKey}`,
 							'Content-Type': 'application/json',
 						},
 						body,
 						json: true,
 					};
 
-					const response = await this.helpers.httpRequest(options);
+					const response = await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'avatarTalkApi',
+						options,
+					);
 
 					returnData.push({
 						json: response,
@@ -222,7 +237,6 @@ export class AvatarTalk implements INodeType {
 						method: 'POST',
 						url: 'https://api.avatartalk.ai/inference?stream=true',
 						headers: {
-							'Authorization': `Bearer ${credentials.apiKey}`,
 							'Content-Type': 'application/json',
 						},
 						body: JSON.stringify(body),
@@ -230,7 +244,11 @@ export class AvatarTalk implements INodeType {
 						encoding: 'arraybuffer',
 					};
 
-					const response = await this.helpers.httpRequest(options);
+					const response = await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'avatarTalkApi',
+						options,
+					);
 					const binaryData = await this.helpers.prepareBinaryData(
 						response,
 						'avatar_video.mp4',
@@ -251,14 +269,17 @@ export class AvatarTalk implements INodeType {
 						method: 'POST',
 						url: 'https://api.avatartalk.ai/inference?delayed=true',
 						headers: {
-							'Authorization': `Bearer ${credentials.apiKey}`,
 							'Content-Type': 'application/json',
 						},
 						body,
 						json: true,
 					};
 
-					const response = await this.helpers.httpRequest(options);
+					const response = await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'avatarTalkApi',
+						options,
+					);
 
 					returnData.push({
 						json: response,

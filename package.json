@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-avatartalk",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "n8n community node for AvatarTalk AI - Generate AI avatar videos with text-to-speech",
 	"license": "MIT",
 	"homepage": "https://github.com/avatartalk-ai/avatartalk-examples",
